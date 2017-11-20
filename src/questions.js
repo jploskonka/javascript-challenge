@@ -1,14 +1,6 @@
-import DIM from './dimensions';
-import { combination } from 'js-combinatorics';
-
-const answersByDim = DIM.reduce((res, dim) => {
-  res[dim.name] = dim.answers;
-  return res;
-}, {});
+import { randomAnswer, answersByDimension, combineDimensions } from './dimensions'
 
 const QUESTION_LABEL = 'Pick the answer that describes you best: (this question title is the same for all questions)';
-
-const dimensionNames = DIM.map(d => d.name);
 
 function buildQuestion(combination, a1, a2) {
   return {
@@ -24,23 +16,10 @@ function buildQuestion(combination, a1, a2) {
   };
 }
 
-function combinations(dimensionNames) {
-  return combination(dimensionNames, 2)
-    .toArray()
-    .reduce((r, c) => r.concat([c, c]), []);
-}
-
-function randomAnswer(dimensionName) {
-  const answers = answersByDim[dimensionName];
-  const index = Math.floor(Math.random() * answers.length);
-
-  return answers.splice(index, 1);
-}
-
-export function prepareQuestions(dimensions) {
+export function prepareQuestions() {
   let questions = [];
 
-  combinations(dimensions.map(d => d.name)).forEach((combination) => {
+  combineDimensions().forEach((combination) => {
     let a1 = randomAnswer(combination[0]);
     let a2 = randomAnswer(combination[1]);
 

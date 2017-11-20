@@ -1,4 +1,4 @@
-import Dimensions from '../src/dimensions';
+import Dimensions from '../src/data/dimensions';
 
 describe('Dimensions', () => {
   it('should have 6 items', () => {

@@ -1,55 +1,54 @@
-import Assessment from '../src/assessment'
-import DIM from '../src/dimensions'
+import dimensions from '../src/data/dimensions';
+import Assessment from '../src/assessment';
+import { questionWithCombination, selectRandomAnswer, allAnswers } from './helpers';
 
 // Feel free to rewrite this test suite. This is provided as guidance.
 describe('The Assessment', () => {
-  const a = new Assessment();
+  const assessment = new Assessment();
+  const { questions, result } = assessment;
 
   it('should have 30 questions', () => {
-    expect(a.questions.length).toBe(30);
+    expect(questions.length).toBe(30);
   });
 
   it('should not show the same answer twice', () => {
-    const flatAns = a.questions.map(q => [q.a1.val, q.a2.val]).reduce((r, c) => r.concat(c));
-    const uniqAns = new Set(flatAns)
+    const answers = allAnswers(questions);
+    const uniqAns = new Set(answers);
 
-    expect(flatAns.length).toEqual(uniqAns.size)
+    expect(answers.length).toEqual(uniqAns.size)
   });
 
   it('should match each dimension to the other dimensions exactly 2 times', () => {
     let combinations = [];
 
-    a.questions.forEach(q => {
+    questions.forEach(q => {
       combinations.push([q.a1.dim, q.a2.dim]);
     });
 
     combinations.forEach(c => {
-      const l = a.questions.filter(q => {
-        return q.a1.dim == c[0] && q.a2.dim == c[1] ||
-          q.a2.dim == c[0] && q.a1.dim == c[1]
-      })
-      expect(l.length).toEqual(2)
+      expect(
+        questions
+          .filter(q => questionWithCombination(q, c))
+          .length
+      ).toEqual(2);
     })
   });
 
   it('should provide ipsative questions (two possible answers)', () => {
-    a.questions.forEach(q => {
+    questions.forEach(q => {
       expect(q.a1).toBeDefined();
       expect(q.a2).toBeDefined();
     });
   });
 
   describe('when completed', () => {
-    a.questions.forEach(q => {
-      const ansi = Math.floor(Math.random() * 2) + 1
-      const ans = q[`a${ansi}`]
-      a.selectAnswer(ans);
-    });
+    questions.forEach(q => selectRandomAnswer(assessment, q));
+
+    const expObj = {};
+    dimensions.forEach(d => (expObj[d.name] = expect.any(Number)));
 
     it('should represent the results based on 6 dimensions', () => {
-      const expObj = {};
-      DIM.forEach(d => (expObj[d.name] = expect.any(Number)));
-      expect(a.result).toMatchObject(expObj)
+      expect(result).toMatchObject(expObj)
     });
   });
 });

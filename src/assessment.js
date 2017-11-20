@@ -1,11 +1,10 @@
-import dimensions from './dimensions'
 import { prepareResult } from './result';
 import { prepareQuestions } from './questions';
 
 class Assessment {
   constructor() {
-    this.questions = prepareQuestions(dimensions);
-    this.result = prepareResult(dimensions);
+    this.questions = prepareQuestions();
+    this.result    = prepareResult();
   }
 
   selectAnswer(answer) {
