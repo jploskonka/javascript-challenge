@@ -1,6 +1,6 @@
-export function prepareResult(dimensionNames) {
+export function prepareResult(dimensions) {
   let result = {};
-  dimensionNames.forEach(d => { result[d] = 0 });
+  dimensions.forEach(d => { result[d.name] = 0 });
   return result;
 }
 

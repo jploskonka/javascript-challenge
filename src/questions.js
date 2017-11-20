@@ -8,6 +8,8 @@ const answersByDim = DIM.reduce((res, dim) => {
 
 const QUESTION_LABEL = 'Pick the answer that describes you best: (this question title is the same for all questions)';
 
+const dimensionNames = DIM.map(d => d.name);
+
 function buildQuestion(combination, a1, a2) {
   return {
     text: QUESTION_LABEL,
@@ -35,10 +37,10 @@ function randomAnswer(dimensionName) {
   return answers.splice(index, 1);
 }
 
-export function prepareQuestions(dimensionNames) {
+export function prepareQuestions(dimensions) {
   let questions = [];
 
-  combinations(dimensionNames).forEach((combination) => {
+  combinations(dimensions.map(d => d.name)).forEach((combination) => {
     let a1 = randomAnswer(combination[0]);
     let a2 = randomAnswer(combination[1]);
 
